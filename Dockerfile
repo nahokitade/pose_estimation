@@ -37,6 +37,8 @@ RUN apt -qq update && apt -qq install --no-install-recommends -y \
     && echo "libedgetpu1-max libedgetpu/accepted-eula boolean true" | debconf-set-selections \
     && apt -qq install --no-install-recommends -y \
         libedgetpu1-max \
+    && apt -qq install --no-install-recommends -y \
+        python3-edgetpu \
     ## Tensorflow lite (python 3.7 only)
     && wget -q https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_x86_64.whl \
     && python3.7 -m pip install tflite_runtime-2.1.0.post1-cp37-cp37m-linux_x86_64.whl \
@@ -45,12 +47,8 @@ RUN apt -qq update && apt -qq install --no-install-recommends -y \
     && (apt-get autoremove -y; apt-get autoclean -y)
 
 # get model and labels
-RUN wget -q https://github.com/google-coral/edgetpu/raw/master/test_data/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite -O /edgetpu_model.tflite --trust-server-names
-RUN wget -q https://dl.google.com/coral/canned_models/coco_labels.txt -O /labelmap.txt --trust-server-names
-RUN wget -q https://storage.googleapis.com/download.tensorflow.org/models/tflite/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29.zip -O /cpu_model.zip && \
-    unzip /cpu_model.zip detect.tflite -d / && \
-    mv /detect.tflite /cpu_model.tflite && \
-    rm /cpu_model.zip
+RUN wget -q https://github.com/google-coral/project-posenet/blob/master/models/posenet_mobilenet_v1_075_721_1281_quant_decoder_edgetpu -O /posenet_mobilenet_v1_075_721_1281_quant_decoder_edgetpu --trust-server-names
+
 
 WORKDIR /opt/frigate/
 ADD frigate frigate/

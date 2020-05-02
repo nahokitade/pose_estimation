@@ -1,4 +1,6 @@
 *.pyc 
 debug
 .vscode
+venv/*
 config/config.yml
+.idea/*
